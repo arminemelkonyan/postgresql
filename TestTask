@@ -1,0 +1,68 @@
+CREATE TABLE IF NOT EXISTS users (
+ 	id serial PRIMARY KEY,
+	name VARCHAR ( 50 )  NOT NULL,
+	email VARCHAR ( 255 ) UNIQUE NOT NULL,
+	created_at TIMESTAMP NOT NULL
+);
+CREATE TABLE IF NOT EXISTS items (
+	id serial PRIMARY KEY,
+ 	count int NOT NULL,
+ 	price int NOT NULL,
+	name VARCHAR ( 255 )  NOT NULL,
+	description TEXT   NOT NULL
+);
+CREATE TABLE IF NOT EXISTS carts (
+	id serial,
+ 	user_id int NOT NULL,
+	item_id int NOT NULL,
+  PRIMARY KEY (id,user_id, item_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (item_id) REFERENCES items(id)ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS orders (
+	id serial,
+ 	user_id int NOT NULL,
+	item_id int NOT NULL,
+	created_at TIMESTAMP NOT NULL,
+  PRIMARY KEY (id,user_id, item_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (item_id) REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+INSERT INTO users (name, email, created_at) VALUES
+  ('Armine Melkonyan', 'armine@mail.com','2023-01-16' ),
+  ('Ivan Ivanov', 'ivanov@mail.com','2023-01-16' ),
+  ('Jhon Doe', 'jhon@mail.com','2023-01-16' ),
+  ('Test User', 'user@mail.com','2023-01-16' );
+  
+
+INSERT INTO items (name, description, count,price) VALUES
+  ('BMW iX','What is BMW doing to become more sustainable along the entire value chain? Climate optimist Anne Therese Gennari poses this question in introducing the new BMW podcast series.',11,9580000 ),
+  ('BMW iX M60','What is BMW doing to become more sustainable along the entire value chain? Climate optimist Anne Therese Gennari poses this question in introducing the new BMW podcast series.',2,12580000 ),
+  ('BMW i7','What is BMW doing to become more sustainable along the entire value chain? Climate optimist Anne Therese Gennari poses this question in introducing the new BMW podcast series.',5,15580000 ),
+  ('BMW i4 M50','What is BMW doing to become more sustainable along the entire value chain? Climate optimist Anne Therese Gennari poses this question in introducing the new BMW podcast series.',3,16580000 );
+  
+ INSERT INTO carts (user_id, item_id) VALUES
+  (1,2),
+  (1,4),
+  (2,3),
+  (2,2),
+  (2,5);
+  
+  INSERT INTO orders (user_id, item_id,created_at) VALUES
+  (1,2,'2022-01-14' ),
+  (1,5,'2022-07-05'),
+  (2,5,'2022-07-25'),
+  (2,4,'2022-11-11');
+  
+  
+//Select user  orders
+
+SELECT users.id , users.name , orders.id , items.id, items.name, orders.created_at from users 
+ JOIN orders ON users.id=orders.user_id  
+ JOIN items ON items.id=orders.item_id ; 
+
+Delet user with orders and carts
+
+DELETE FROM users WHERE id = 1;
+  
